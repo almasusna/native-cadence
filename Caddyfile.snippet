@@ -1,0 +1,6 @@
+# Append to /etc/caddy/Caddyfile — free hostname resolving to this server's IP,
+# gets a trusted Let's Encrypt certificate automatically.
+161-97-93-87.sslip.io {
+	encode gzip
+	reverse_proxy localhost:3000
+}

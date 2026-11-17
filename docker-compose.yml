@@ -1,0 +1,10 @@
+services:
+  native-cadence:
+    build: .
+    image: native-cadence:latest
+    container_name: native-cadence
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      # Localhost only — exposed publicly via host Caddy (HTTPS, required for mic access)
+      - "127.0.0.1:3000:3000"
