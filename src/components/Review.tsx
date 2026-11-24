@@ -68,7 +68,7 @@ export function Review({
   return (
     <div className="pb-10 pt-6">
       {/* ── Verdict masthead ── */}
-      <header className="grid animate-rise border-[1.5px] border-ink bg-card md:grid-cols-[1fr_auto]">
+      <header className="grid animate-rise overflow-hidden rounded-2xl border border-line bg-card md:grid-cols-[1fr_auto]">
         <div className="p-7 md:p-10">
           <div className="label flex flex-wrap items-center gap-3 text-mute">
             <span className="bg-ink px-2 py-1 text-paper">Take reviewed</span>
@@ -80,7 +80,7 @@ export function Review({
           </h1>
           <p className="mt-5 max-w-2xl text-lg leading-relaxed text-ink-2">{feedback.verdict}</p>
         </div>
-        <div className="flex flex-row items-center justify-center gap-6 border-t border-ink bg-ink p-8 text-paper md:flex-col md:border-l md:border-t-0">
+        <div className="flex flex-row items-center justify-center gap-6 border-t border-line bg-ink p-8 text-paper md:flex-col md:border-l md:border-t-0">
           <span className="label text-paper/50">{feedback.band ? "Est. band" : "Overall"}</span>
           <span className="font-display text-[5.5rem] leading-none text-marker">
             {feedback.band ?? overall}
@@ -90,14 +90,14 @@ export function Review({
       </header>
 
       {/* ── Stats strip ── */}
-      <dl className="grid grid-cols-2 border-x-[1.5px] border-b-[1.5px] border-ink md:grid-cols-4">
+      <dl className="grid grid-cols-2 border-x-[1.5px] border-b-[1.5px] border-line md:grid-cols-4">
         {[
           ["Duration", fmtTime(seconds)],
           ["Pace", `${feedback.stats.wpm} wpm`],
           ["Fillers", String(feedback.stats.fillers)],
           ["Unique words", String(feedback.stats.uniqueWords)],
         ].map(([k, v], i) => (
-          <div key={k} className={`px-6 py-4 ${i % 2 === 0 ? "border-r border-ink" : ""} ${i === 1 ? "md:border-r" : ""} ${i < 2 ? "border-b border-ink md:border-b-0" : ""}`}>
+          <div key={k} className={`px-6 py-4 ${i % 2 === 0 ? "border-r border-line" : ""} ${i === 1 ? "md:border-r" : ""} ${i < 2 ? "border-b border-line md:border-b-0" : ""}`}>
             <dt className="label text-mute">{k}</dt>
             <dd className="mt-1 font-display text-3xl">{v}</dd>
           </div>
@@ -108,7 +108,7 @@ export function Review({
         {/* ── Transcript editor ── */}
         <section>
           <div className="flex flex-wrap items-center justify-between gap-4">
-            <div className="flex border-[1.5px] border-ink">
+            <div className="flex overflow-hidden rounded-2xl border border-line">
               {(
                 [
                   ["yours", "Your take, red-penned"],
@@ -118,7 +118,7 @@ export function Review({
                 <button
                   key={k}
                   onClick={() => setView(k)}
-                  className={`px-4 py-2.5 text-sm font-semibold ${i ? "border-l-[1.5px] border-ink" : ""} ${
+                  className={`px-4 py-2.5 text-sm font-semibold ${i ? "border-l-[1.5px] border-line" : ""} ${
                     view === k ? "bg-ink text-paper" : "hover:bg-paper-2"
                   }`}
                 >
@@ -131,7 +131,7 @@ export function Review({
             )}
           </div>
 
-          <div className="relative mt-5 border-[1.5px] border-ink bg-card p-7 md:p-9">
+          <div className="relative mt-5 rounded-2xl border border-line bg-card p-7 md:p-9">
             {/* margin rule like a legal pad */}
             <span className="absolute bottom-0 left-12 top-0 hidden w-px bg-signal/40 md:block" />
             {view === "yours" ? (
@@ -192,7 +192,7 @@ export function Review({
           {view === "yours" && (
             <>
               <div className="label mt-8 text-mute">Editor’s notes</div>
-              <ol className="mt-3 grid gap-px border-[1.5px] border-ink bg-ink sm:grid-cols-2">
+              <ol className="mt-3 grid gap-px rounded-2xl border border-line bg-ink sm:grid-cols-2">
                 {notes.map((s) => {
                   const k = kindLabel[s.kind!];
                   return (
@@ -226,7 +226,7 @@ export function Review({
 
         {/* ── Mixing desk ── */}
         <aside>
-          <div className="border-[1.5px] border-ink bg-ink p-6 text-paper">
+          <div className="rounded-2xl border border-line bg-ink p-6 text-paper">
             <div className="flex items-center justify-between">
               <span className="label text-paper/60">Mixing desk</span>
               <span className="label text-paper/40">{event.title}</span>
@@ -241,7 +241,7 @@ export function Review({
                       style={{ height: `${s.value}%` }}
                     />
                     <div
-                      className="absolute left-1/2 h-4 w-9 -translate-x-1/2 translate-y-1/2 rounded-[3px] border border-ink bg-paper shadow-[0_2px_0_0_rgba(0,0,0,.5)]"
+                      className="absolute left-1/2 h-4 w-9 -translate-x-1/2 translate-y-1/2 rounded-[3px] border border-line bg-paper shadow-[0_2px_0_0_rgba(0,0,0,.5)]"
                       style={{ bottom: `${s.value}%` }}
                     >
                       <span className="absolute inset-x-1.5 top-1/2 h-px bg-ink" />
@@ -254,9 +254,9 @@ export function Review({
               ))}
             </div>
           </div>
-          <ul className="border-x-[1.5px] border-b-[1.5px] border-ink bg-card">
+          <ul className="border-x-[1.5px] border-b-[1.5px] border-line bg-card">
             {feedback.scores.map((s) => (
-              <li key={s.label} className="flex gap-3 border-b border-dashed border-ink/30 px-5 py-3 text-sm last:border-0">
+              <li key={s.label} className="flex gap-3 border-b border-dashed border-line px-5 py-3 text-sm last:border-0">
                 <span className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${s.value < 60 ? "bg-signal" : "bg-ink"}`} />
                 <span>
                   <b>{s.label}.</b> <span className="text-ink-2">{s.note}</span>
@@ -274,9 +274,6 @@ export function Review({
           <h2 className="font-display text-4xl md:text-5xl">
             Phrases to <span className="italic">steal</span>
           </h2>
-          <Link href="/phrasebook" className="label inline-flex items-center gap-2 hover:text-signal">
-            Phrasebook · {book.items.length} saved <Arrow />
-          </Link>
         </div>
         <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {feedback.phrases.map((p, i) => {
@@ -284,21 +281,21 @@ export function Review({
             return (
               <article
                 key={p.id}
-                className={`flex flex-col border-[1.5px] border-ink transition-all ${saved ? "bg-marker hard-shadow-sm" : "bg-card"}`}
+                className={`flex flex-col rounded-2xl border border-line transition-all ${saved ? "bg-marker hard-shadow-sm" : "bg-card"}`}
                 style={{ transform: `rotate(${[-0.6, 0.4, -0.2, 0.7, -0.5][i % 5]}deg)` }}
               >
-                <div className="flex items-center justify-between border-b border-ink/30 px-5 py-3">
+                <div className="flex items-center justify-between border-b border-line px-5 py-3">
                   <span className="label text-ink-2">{p.register}</span>
                   <span className="label text-mute">№ {String(i + 1).padStart(2, "0")}</span>
                 </div>
                 <div className="flex-1 p-5">
                   <p className="font-display text-[1.75rem] leading-[1.1]">{p.text}</p>
                   <p className="mt-3 text-sm font-medium text-ink-2">{p.use}</p>
-                  <p className="mt-3 border-l-2 border-ink/30 pl-3 text-sm italic text-mute">{p.example}</p>
+                  <p className="mt-3 border-l-2 border-line pl-3 text-sm italic text-mute">{p.example}</p>
                 </div>
                 <button
                   onClick={() => book.toggle(p, { event: event.slug, scenarioTitle: scenario.title })}
-                  className={`flex items-center justify-center gap-2 border-t border-ink py-3 text-sm font-semibold transition-colors ${
+                  className={`flex items-center justify-center gap-2 border-t border-line py-3 text-sm font-semibold transition-colors ${
                     saved ? "bg-ink text-marker" : "hover:bg-ink hover:text-paper"
                   }`}
                   aria-pressed={saved}
@@ -312,7 +309,7 @@ export function Review({
       </section>
 
       {/* ── Next actions ── */}
-      <div className="mt-16 grid border-[1.5px] border-ink md:grid-cols-3">
+      <div className="mt-16 grid rounded-2xl border border-line md:grid-cols-3">
         <button onClick={onRetake} className="flex items-center justify-between gap-3 p-6 text-left transition-colors hover:bg-paper-2">
           <span>
             <span className="label block text-mute">Same cue</span>
@@ -321,18 +318,18 @@ export function Review({
           <span className="text-2xl">↺</span>
         </button>
         <Link
-          href={`/events/${event.slug}`}
-          className="flex items-center justify-between gap-3 border-t border-ink p-6 transition-colors hover:bg-paper-2 md:border-l md:border-t-0"
+          href="/#practices"
+          className="flex items-center justify-between gap-3 border-t border-line p-6 transition-colors hover:bg-paper-2 md:border-l md:border-t-0"
         >
           <span>
             <span className="label block text-mute">Back to</span>
-            <span className="font-display text-3xl">{event.title}</span>
+            <span className="font-display text-3xl">All practices</span>
           </span>
         </Link>
         {nextId && (
           <Link
             href={`/practice/${nextId}`}
-            className="group flex items-center justify-between gap-3 border-t border-ink bg-signal p-6 text-card transition-colors hover:bg-signal-deep md:border-l md:border-t-0"
+            className="group flex items-center justify-between gap-3 border-t border-line bg-signal p-6 text-card transition-colors hover:bg-signal-deep md:border-l md:border-t-0"
           >
             <span>
               <span className="label block text-card/70">Keep going</span>

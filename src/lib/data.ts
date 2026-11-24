@@ -30,24 +30,16 @@ export type Scenario = {
   framework?: string;
   seconds: number;
   level: Level;
-  source: "house" | "community";
-  creatorId?: string;
-  locked?: boolean;
   plays: number;
 };
 
-export type Creator = {
+export type ProviderKind = "School" | "Company" | "Platform";
+
+export type Provider = {
   id: string;
   name: string;
-  credential: string;
-  initials: string;
-  subscribers: number;
-  rating: number;
-  price: number;
-  event: EventSlug;
-  packTitle: string;
-  packBlurb: string;
-  scenarioCount: number;
+  kind: ProviderKind;
+  about: string;
 };
 
 export type Phrase = {
@@ -145,73 +137,23 @@ export const events: StageEvent[] = [
   },
 ];
 
-export const creators: Creator[] = [
-  {
-    id: "layla",
-    name: "Layla Haddad",
-    credential: "Former cabin crew recruiter, 9 yrs",
-    initials: "LH",
-    subscribers: 1284,
-    rating: 4.9,
-    price: 5,
-    event: "qatar-airways",
-    packTitle: "The Final Interview, Decoded",
-    packBlurb: "The 28 situational questions that actually come up on assessment day.",
-    scenarioCount: 28,
-  },
-  {
-    id: "marcus",
-    name: "Marcus Oyelaran",
-    credential: "IELTS examiner (ret.), band 9 coach",
-    initials: "MO",
-    subscribers: 3410,
-    rating: 4.8,
-    price: 5,
-    event: "ielts-speaking",
-    packTitle: "Part 2 Cue Cards — 2026 Rotation",
-    packBlurb: "Fresh long-turn topics with examiner notes on what lifts you from 6.5 to 7.5.",
-    scenarioCount: 64,
-  },
-  {
-    id: "priya",
-    name: "Priya Raman",
-    credential: "Head of Talent, Series C fintech",
-    initials: "PR",
-    subscribers: 912,
-    rating: 4.7,
-    price: 6,
-    event: "job-interview",
-    packTitle: "Product Manager Loop",
-    packBlurb: "Prioritisation, stakeholder conflict and the dreaded 'tell me about a failure'.",
-    scenarioCount: 35,
-  },
-  {
-    id: "tomas",
-    name: "Tomás Ibarra",
-    credential: "Call-centre trainer, 12 yrs",
-    initials: "TI",
-    subscribers: 467,
-    rating: 4.6,
-    price: 4,
-    event: "customer-complaints",
-    packTitle: "Hot Calls: Telecom & Banking",
-    packBlurb: "Billing disputes, fraud scares and cancellation threats — scripted from real calls.",
-    scenarioCount: 22,
-  },
-  {
-    id: "anika",
-    name: "Anika Sørensen",
-    credential: "Pre-seed founder, 2 exits",
-    initials: "AS",
-    subscribers: 655,
-    rating: 4.8,
-    price: 5,
-    event: "pitch",
-    packTitle: "The 90-Second Pitch Gym",
-    packBlurb: "Investor interruptions on loop until your opening line is unshakable.",
-    scenarioCount: 18,
-  },
+// Who published each practice. Fictional schools and companies for the demo.
+export const providers: Provider[] = [
+  { id: "brightline", name: "Brightline English School", kind: "School", about: "IELTS and general English" },
+  { id: "harbour", name: "Harbour Business English", kind: "School", about: "Interview and workplace English" },
+  { id: "skyward", name: "Skyward Cabin Crew Academy", kind: "School", about: "Airline assessment-day coaching" },
+  { id: "northwind", name: "Northwind Telecom", kind: "Company", about: "Front-line support training" },
+  { id: "nc", name: "Native Cadence", kind: "Platform", about: "Free starter practices" },
 ];
+
+const providerByEvent: Record<EventSlug, string> = {
+  "ielts-speaking": "brightline",
+  "job-interview": "harbour",
+  "qatar-airways": "skyward",
+  "customer-complaints": "northwind",
+  "visa-interview": "nc",
+  pitch: "nc",
+};
 
 export const scenarios: Scenario[] = [
   // ── Company interview
@@ -224,7 +166,6 @@ export const scenarios: Scenario[] = [
     framework: "Present · Past · Future",
     seconds: 90,
     level: "Warm-up",
-    source: "house",
     plays: 18233,
   },
   {
@@ -236,7 +177,6 @@ export const scenarios: Scenario[] = [
     framework: "Situation · Task · Action · Result",
     seconds: 120,
     level: "Standard",
-    source: "house",
     plays: 11408,
   },
   {
@@ -248,7 +188,6 @@ export const scenarios: Scenario[] = [
     framework: "Own · Impact · Fix · Lesson",
     seconds: 120,
     level: "Pressure",
-    source: "house",
     plays: 9021,
   },
   {
@@ -259,7 +198,6 @@ export const scenarios: Scenario[] = [
     hint: "Three proof points that map to the job description. Close with a forward-looking line about their team.",
     seconds: 75,
     level: "Standard",
-    source: "house",
     plays: 13560,
   },
   {
@@ -270,8 +208,6 @@ export const scenarios: Scenario[] = [
     hint: "Name the decision criteria before the decision. Show how you'd communicate the 'no' to the loser.",
     seconds: 150,
     level: "Pressure",
-    source: "community",
-    creatorId: "priya",
     plays: 2204,
   },
   {
@@ -282,9 +218,6 @@ export const scenarios: Scenario[] = [
     hint: "Data first, ego last. Mention who you told and how.",
     seconds: 120,
     level: "Standard",
-    source: "community",
-    creatorId: "priya",
-    locked: true,
     plays: 1530,
   },
 
@@ -298,7 +231,6 @@ export const scenarios: Scenario[] = [
     framework: "Answer · Reason · Example",
     seconds: 40,
     level: "Warm-up",
-    source: "house",
     plays: 40211,
   },
   {
@@ -311,7 +243,6 @@ export const scenarios: Scenario[] = [
     framework: "What · Why · How · Feeling",
     seconds: 120,
     level: "Standard",
-    source: "house",
     plays: 35870,
   },
   {
@@ -323,7 +254,6 @@ export const scenarios: Scenario[] = [
     framework: "Position · Concession · Example",
     seconds: 90,
     level: "Pressure",
-    source: "house",
     plays: 22104,
   },
   {
@@ -334,7 +264,6 @@ export const scenarios: Scenario[] = [
     hint: "Contrast past and present to show tense control: 'I used to… but these days I tend to…'.",
     seconds: 40,
     level: "Warm-up",
-    source: "house",
     plays: 31009,
   },
   {
@@ -346,8 +275,6 @@ export const scenarios: Scenario[] = [
     hint: "Sensory detail lifts Lexical Resource: sounds, smells, how close people stood.",
     seconds: 120,
     level: "Standard",
-    source: "community",
-    creatorId: "marcus",
     plays: 8810,
   },
   {
@@ -358,9 +285,6 @@ export const scenarios: Scenario[] = [
     hint: "Speculative grammar: 'it's conceivable that…', 'we may well see…'.",
     seconds: 90,
     level: "Pressure",
-    source: "community",
-    creatorId: "marcus",
-    locked: true,
     plays: 6102,
   },
 
@@ -373,7 +297,6 @@ export const scenarios: Scenario[] = [
     hint: "Avoid 'I love to travel'. Talk about service, people and the standard the airline is known for.",
     seconds: 75,
     level: "Warm-up",
-    source: "house",
     plays: 15420,
   },
   {
@@ -385,7 +308,6 @@ export const scenarios: Scenario[] = [
     framework: "Acknowledge · Apologise · Act · Assure",
     seconds: 90,
     level: "Pressure",
-    source: "house",
     plays: 12077,
   },
   {
@@ -396,7 +318,6 @@ export const scenarios: Scenario[] = [
     hint: "On board, teamwork is safety. Show you kept the service seamless for passengers.",
     seconds: 90,
     level: "Standard",
-    source: "house",
     plays: 9930,
   },
   {
@@ -407,8 +328,6 @@ export const scenarios: Scenario[] = [
     hint: "Lower your voice, slow your pace, give them a job: 'Let's breathe together for the next minute'.",
     seconds: 60,
     level: "Standard",
-    source: "community",
-    creatorId: "layla",
     plays: 4410,
   },
   {
@@ -419,9 +338,6 @@ export const scenarios: Scenario[] = [
     hint: "Recruiters watch who includes the quiet person. Use names.",
     seconds: 60,
     level: "Pressure",
-    source: "community",
-    creatorId: "layla",
-    locked: true,
     plays: 3874,
   },
 
@@ -435,7 +351,6 @@ export const scenarios: Scenario[] = [
     framework: "Hear · Own · Fix · Follow-up",
     seconds: 60,
     level: "Standard",
-    source: "house",
     plays: 7703,
   },
   {
@@ -446,7 +361,6 @@ export const scenarios: Scenario[] = [
     hint: "Say what you CAN do before what you can't. Offer two options so they feel in control.",
     seconds: 75,
     level: "Pressure",
-    source: "house",
     plays: 6620,
   },
   {
@@ -457,7 +371,6 @@ export const scenarios: Scenario[] = [
     hint: "Name the emotion and the stakes. People forgive delays, not indifference.",
     seconds: 60,
     level: "Warm-up",
-    source: "house",
     plays: 5512,
   },
   {
@@ -468,8 +381,6 @@ export const scenarios: Scenario[] = [
     hint: "Honour the loyalty out loud before you mention a retention offer.",
     seconds: 75,
     level: "Pressure",
-    source: "community",
-    creatorId: "tomas",
     plays: 1980,
   },
 
@@ -482,7 +393,6 @@ export const scenarios: Scenario[] = [
     hint: "One sentence. Specific. Match your documents exactly.",
     seconds: 20,
     level: "Warm-up",
-    source: "house",
     plays: 12210,
   },
   {
@@ -493,7 +403,6 @@ export const scenarios: Scenario[] = [
     hint: "Concrete ties: job, family, property, a start date. No pleading, no over-explaining.",
     seconds: 40,
     level: "Pressure",
-    source: "house",
     plays: 10044,
   },
   {
@@ -504,7 +413,6 @@ export const scenarios: Scenario[] = [
     hint: "Name the sponsor, the relationship and the amount. Confident numbers sound like truth.",
     seconds: 30,
     level: "Standard",
-    source: "house",
     plays: 8340,
   },
 
@@ -518,7 +426,6 @@ export const scenarios: Scenario[] = [
     framework: "Problem · Answer · Proof",
     seconds: 30,
     level: "Warm-up",
-    source: "house",
     plays: 6731,
   },
   {
@@ -529,7 +436,6 @@ export const scenarios: Scenario[] = [
     hint: "Don't say 'nothing'. Talk about speed, focus, a data advantage or a distribution wedge.",
     seconds: 60,
     level: "Pressure",
-    source: "house",
     plays: 4102,
   },
   {
@@ -540,8 +446,6 @@ export const scenarios: Scenario[] = [
     hint: "Answer the number straight, then bridge back: 'and that's exactly why the next slide matters'.",
     seconds: 45,
     level: "Pressure",
-    source: "community",
-    creatorId: "anika",
     plays: 1702,
   },
 ];
@@ -677,7 +581,7 @@ export function feedbackFor(event: EventSlug): Feedback {
 
 export const getEvent = (slug: string) => events.find((e) => e.slug === slug);
 export const getScenario = (id: string) => scenarios.find((s) => s.id === id);
-export const getCreator = (id?: string) => creators.find((c) => c.id === id);
+export const getProvider = (s: Scenario) => providers.find((p) => p.id === providerByEvent[s.event])!;
 export const scenariosFor = (slug: EventSlug) => scenarios.filter((s) => s.event === slug);
 
 export const toneClass: Record<StageEvent["tone"], { bg: string; fg: string }> = {
@@ -687,20 +591,3 @@ export const toneClass: Record<StageEvent["tone"], { bg: string; fg: string }> =
   marker: { bg: "bg-marker", fg: "text-ink" },
 };
 
-export const me = {
-  name: "Almas",
-  initials: "AL",
-  streak: 6,
-  takesThisWeek: 14,
-  minutesSpoken: 47,
-};
-
-// creator earnings — monthly payouts for the Studio page
-export const studioMonths = [
-  { m: "Jun", subs: 38, payout: 133 },
-  { m: "Jul", subs: 61, payout: 213.5 },
-  { m: "Aug", subs: 84, payout: 294 },
-  { m: "Sep", subs: 102, payout: 357 },
-  { m: "Oct", subs: 131, payout: 458.5 },
-  { m: "Nov", subs: 158, payout: 553 },
-];

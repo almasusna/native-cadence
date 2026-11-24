@@ -1,51 +1,41 @@
 @import "tailwindcss";
 
 /* ──────────────────────────────────────────────────────────────
-   Native Cadence — "rehearsal room" design system
-   Warm newsprint paper, studio ink, one on-air signal red,
-   and a highlighter for the words worth keeping.
+   Native Cadence — "soft studio" design system
+   Cool daylight canvas, deep night-navy ink, one electric
+   indigo accent, lime highlighter, rounded glassy surfaces.
    ────────────────────────────────────────────────────────────── */
 
 @theme {
-  --color-paper: #efe8d8;
-  --color-paper-2: #e5dbc4;
-  --color-card: #f8f3e7;
-  --color-ink: #17140f;
-  --color-ink-2: #3a342b;
-  --color-mute: #776d5f;
-  --color-line: #cdc1a8;
-  --color-signal: #e5431d;
-  --color-signal-deep: #b5300f;
-  --color-marker: #f3d43f;
-  --color-moss: #1f4d3f;
-  --color-moss-soft: #cfdccf;
+  --color-paper: #eef0f7;
+  --color-paper-2: #e2e6f2;
+  --color-card: #ffffff;
+  --color-ink: #12152b;
+  --color-ink-2: #3b4060;
+  --color-mute: #7a7f9a;
+  --color-line: #d9dcea;
+  --color-signal: #5b4cf0;
+  --color-signal-deep: #4335d6;
+  --color-marker: #d7f75b;
+  --color-moss: #0f766e;
+  --color-moss-soft: #ccefe9;
 
-  --font-display: var(--font-instrument), "Times New Roman", serif;
-  --font-sans: var(--font-schibsted), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-jetbrains), ui-monospace, monospace;
+  --font-display: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
   --font-hand: var(--font-caveat), cursive;
 
   --animate-onair: onair 1.6s ease-in-out infinite;
-  --animate-ticker: ticker 38s linear infinite;
   --animate-rise: rise 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) both;
 }
 
 @keyframes onair {
   0%,
   100% {
-    box-shadow: 0 0 0 0 rgb(229 67 29 / 0.55);
+    box-shadow: 0 0 0 0 rgb(91 76 240 / 0.5);
   }
   50% {
-    box-shadow: 0 0 0 10px rgb(229 67 29 / 0);
-  }
-}
-
-@keyframes ticker {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
+    box-shadow: 0 0 0 10px rgb(91 76 240 / 0);
   }
 }
 
@@ -75,22 +65,14 @@ html {
 }
 
 body {
-  background: var(--color-paper);
+  background:
+    radial-gradient(60rem 40rem at 85% -10%, rgb(91 76 240 / 0.13), transparent 60%),
+    radial-gradient(50rem 36rem at -10% 20%, rgb(215 247 91 / 0.22), transparent 60%),
+    var(--color-paper);
+  background-attachment: fixed;
   color: var(--color-ink);
   font-family: var(--font-sans);
   font-feature-settings: "ss01", "cv11";
-}
-
-/* paper grain over everything, never intercepting clicks */
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 60;
-  opacity: 0.32;
-  mix-blend-mode: multiply;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .35  0 0 0 0 .3  0 0 0 0 .22  0 0 0 .22 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
 }
 
 ::selection {
@@ -99,99 +81,105 @@ body::before {
 }
 
 @layer components {
-  /* mono metadata label, like a console channel strip */
+  /* small mono metadata label */
   .label {
     font-family: var(--font-mono);
-    font-size: 0.68rem;
-    letter-spacing: 0.14em;
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
+  }
+
+  /* display type: italics become the accent colour instead of slanting */
+  .font-display {
+    letter-spacing: -0.035em;
+    font-weight: 600;
+  }
+  .font-display .italic,
+  .font-display.italic,
+  h1 .italic,
+  h2 .italic {
+    color: var(--color-signal);
+  }
+  :is(.bg-ink, .bg-moss, .bg-signal) :is(.font-display .italic, .font-display.italic) {
+    color: var(--color-marker);
   }
 
   /* highlighter stroke behind text */
   .marker {
-    background-image: linear-gradient(
-      104deg,
-      transparent 0.6%,
-      var(--color-marker) 2.4%,
-      color-mix(in oklab, var(--color-marker) 85%, transparent) 96%,
-      transparent 99%
-    );
-    background-size: 100% 62%;
-    background-position: 0 78%;
-    background-repeat: no-repeat;
-    padding: 0 0.12em;
+    background-image: linear-gradient(transparent 55%, var(--color-marker) 55%);
+    padding: 0 0.15em;
+    border-radius: 0.2em;
     box-decoration-break: clone;
     -webkit-box-decoration-break: clone;
   }
 
-  /* cue card — perforated top edge */
+  /* raised card */
   .cue {
     position: relative;
     background: var(--color-card);
-    border: 1px solid var(--color-ink);
-  }
-  .cue::before {
-    content: "";
-    position: absolute;
-    left: 10px;
-    right: 10px;
-    top: 9px;
-    height: 0;
-    border-top: 1.5px dashed color-mix(in oklab, var(--color-ink) 28%, transparent);
+    border: 1px solid var(--color-line);
+    border-radius: 1.25rem;
+    box-shadow:
+      0 1px 2px rgb(18 21 43 / 0.04),
+      0 12px 32px -12px rgb(18 21 43 / 0.14);
   }
 
-  /* ticket stub notches */
+  /* kept for markup compatibility: tickets are now plain rounded cards */
   .stub {
-    --notch: 11px;
-    mask:
-      radial-gradient(circle var(--notch) at 0 50%, #0000 98%, #000) left / 51% 100% no-repeat,
-      radial-gradient(circle var(--notch) at 100% 50%, #0000 98%, #000) right / 51% 100% no-repeat;
+    border-radius: 1.25rem;
   }
 
   .hard-shadow {
-    box-shadow: 5px 5px 0 0 var(--color-ink);
+    box-shadow:
+      0 2px 4px rgb(18 21 43 / 0.04),
+      0 24px 48px -16px rgb(43 33 160 / 0.28);
   }
   .hard-shadow-sm {
-    box-shadow: 3px 3px 0 0 var(--color-ink);
+    box-shadow:
+      0 1px 2px rgb(18 21 43 / 0.05),
+      0 12px 24px -10px rgb(43 33 160 / 0.22);
   }
 
   .btn {
     display: inline-flex;
     align-items: center;
     gap: 0.6rem;
-    border: 1.5px solid var(--color-ink);
-    padding: 0.8rem 1.25rem;
+    border: 1px solid var(--color-line);
+    border-radius: 999px;
+    padding: 0.8rem 1.4rem;
     font-weight: 600;
     font-size: 0.95rem;
     transition:
-      transform 0.15s ease,
-      box-shadow 0.15s ease,
-      background 0.15s ease;
+      transform 0.2s ease,
+      box-shadow 0.2s ease,
+      background 0.2s ease;
   }
   .btn:hover {
-    transform: translate(-2px, -2px);
-    box-shadow: 4px 4px 0 0 var(--color-ink);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 24px -10px rgb(43 33 160 / 0.35);
   }
   .btn:active {
-    transform: translate(0, 0);
+    transform: translateY(0);
     box-shadow: none;
   }
   .btn-ink {
     background: var(--color-ink);
+    border-color: var(--color-ink);
     color: var(--color-paper);
   }
   .btn-signal {
     background: var(--color-signal);
-    color: var(--color-card);
+    border-color: var(--color-signal);
+    color: #fff;
   }
   .btn-ghost {
-    background: transparent;
+    background: rgb(255 255 255 / 0.6);
   }
 
   .rule-double {
-    border-top: 1px solid var(--color-ink);
-    border-bottom: 1px solid var(--color-ink);
-    height: 5px;
+    border-top: 1px solid var(--color-line);
+    height: 0;
   }
 
   .idle-bar {
@@ -199,10 +187,10 @@ body::before {
     animation: idle-bar 1.4s ease-in-out infinite;
   }
 
-  /* hand-drawn red pen for the feedback editor */
+  /* editor marks for the feedback view */
   .pen-strike {
     text-decoration: line-through;
-    text-decoration-color: var(--color-signal);
+    text-decoration-color: #e5484d;
     text-decoration-thickness: 2px;
     color: var(--color-mute);
   }
@@ -216,6 +204,14 @@ body::before {
     text-decoration-thickness: 2px;
     text-underline-offset: 5px;
   }
+}
+
+/* unlayered so it beats Tailwind's `italic` utility: display type never slants */
+.font-display .italic,
+.font-display.italic,
+h1 .italic,
+h2 .italic {
+  font-style: normal;
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -38,7 +38,7 @@ export function Waveform({
 export function Logo({ className = "" }: { className?: string }) {
   return (
     <span className={`inline-flex items-center gap-2.5 ${className}`}>
-      <span className="relative grid h-8 w-8 place-items-center rounded-full bg-ink">
+      <span className="relative grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-signal to-ink">
         <span className="flex h-3.5 items-center gap-[2px]">
           {[0.45, 1, 0.7, 0.3].map((h, i) => (
             <span
@@ -48,9 +48,9 @@ export function Logo({ className = "" }: { className?: string }) {
             />
           ))}
         </span>
-        <span className="absolute -right-0.5 -top-0.5 h-2.5 w-2.5 rounded-full border-2 border-paper bg-signal" />
+        <span className="absolute -right-0.5 -top-0.5 h-2.5 w-2.5 rounded-full border-2 border-card bg-marker" />
       </span>
-      <span className="font-display text-[1.65rem] leading-none tracking-tight">
+      <span className="font-display text-[1.35rem] leading-none">
         Native Cadence
       </span>
     </span>
@@ -66,7 +66,7 @@ export function Tag({
 }) {
   return (
     <span
-      className={`label inline-flex items-center gap-1.5 border border-ink/70 px-2 py-1 ${className}`}
+      className={`label inline-flex items-center gap-1.5 rounded-full border border-line bg-card/70 px-2.5 py-1 ${className}`}
     >
       {children}
     </span>
@@ -82,7 +82,7 @@ export function Avatar({
 }) {
   return (
     <span
-      className={`grid h-9 w-9 shrink-0 place-items-center rounded-full border-[1.5px] border-ink bg-marker font-mono text-[0.7rem] font-bold ${className}`}
+      className={`grid h-9 w-9 shrink-0 place-items-center rounded-full border border-white bg-marker font-mono shadow-sm text-[0.7rem] font-bold ${className}`}
     >
       {initials}
     </span>
@@ -129,7 +129,7 @@ export function SectionHead({
       <div className="rule-double" />
       <div className="mt-4 flex flex-wrap items-end justify-between gap-4">
         <div className="flex items-baseline gap-4">
-          <span className="label text-mute">{index}</span>
+          <span className="label rounded-full bg-card px-2.5 py-1 text-signal">{index}</span>
           <h2 className="font-display text-4xl leading-none md:text-5xl">{title}</h2>
         </div>
         {aside}
@@ -148,7 +148,7 @@ export function LevelMeter({ level }: { level: string }) {
         {[1, 2, 3].map((i) => (
           <span
             key={i}
-            className={`h-2 w-2 rounded-full border border-ink ${i <= n ? (n === 3 ? "bg-signal" : "bg-ink") : ""}`}
+            className={`h-2 w-2 rounded-full border border-ink/40 ${i <= n ? (n === 3 ? "bg-signal" : "bg-ink") : ""}`}
           />
         ))}
       </span>

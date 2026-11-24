@@ -2,126 +2,55 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Avatar, Logo } from "./ui";
-import { me } from "@/lib/data";
-
-const nav = [
-  { href: "/", label: "Stages" },
-  { href: "/exchange", label: "Exchange" },
-  { href: "/phrasebook", label: "Phrasebook" },
-  { href: "/studio", label: "Studio" },
-];
-
-const ticker = [
-  "IELTS Part 2 — 2026 cue cards just dropped",
-  "Layla H. published 4 new cabin-crew scenarios",
-  "Most rehearsed today: “Tell me about yourself”",
-  "Phrase of the day: “What I can do for you right now is…”",
-  "1,284 people practising Qatar Airways finals this week",
-  "Creators earned $41,920 on the Exchange in October",
-];
+import { Logo } from "./ui";
 
 export function SiteHeader() {
   const path = usePathname();
-  const active = (href: string) =>
-    href === "/" ? path === "/" || path.startsWith("/events") || path.startsWith("/practice") : path.startsWith(href);
+  const onSchools = path.startsWith("/schools");
 
   return (
-    <header className="sticky top-0 z-40 bg-paper/92 backdrop-blur-[2px]">
-      {/* broadcast ticker */}
-      <div className="flex h-8 items-center overflow-hidden border-b border-ink bg-ink text-paper">
-        <span className="label z-10 flex h-full shrink-0 items-center gap-2 bg-signal px-3 text-card">
-          <span className="h-1.5 w-1.5 animate-onair rounded-full bg-card" />
-          Live
-        </span>
-        <div className="relative flex-1 overflow-hidden">
-          <div className="flex w-max animate-ticker">
-            {[...ticker, ...ticker].map((t, i) => (
-              <span key={i} className="label whitespace-nowrap px-6 text-paper/80">
-                {t} <span className="ml-6 text-signal">✦</span>
-              </span>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      <div className="mx-auto flex h-16 max-w-[1320px] items-center justify-between gap-6 border-b border-ink px-5 md:px-8">
+    <header className="sticky top-0 z-40 px-3 pt-3 md:px-6 md:pt-4">
+      <div className="mx-auto flex h-16 max-w-[1200px] items-center justify-between gap-4 rounded-full border border-white/70 bg-white/70 pl-5 pr-2.5 shadow-[0_10px_30px_-14px_rgb(18_21_43/0.25)] backdrop-blur-xl md:pl-6">
         <Link href="/" aria-label="Native Cadence home">
           <Logo />
         </Link>
-
-        <nav className="hidden items-center md:flex">
-          {nav.map((n) => (
-            <Link
-              key={n.href}
-              href={n.href}
-              className={`relative px-4 py-2 text-[0.92rem] font-medium transition-colors ${
-                active(n.href) ? "text-ink" : "text-mute hover:text-ink"
-              }`}
-            >
-              {active(n.href) && (
-                <span className="absolute inset-x-3 -bottom-[13px] h-[3px] bg-signal" />
-              )}
-              {n.label}
-            </Link>
-          ))}
-        </nav>
-
-        <div className="flex items-center gap-4">
-          <div className="hidden text-right sm:block">
-            <div className="label text-mute">Streak</div>
-            <div className="font-display text-xl leading-none">
-              {me.streak} <span className="text-base italic text-mute">days</span>
-            </div>
-          </div>
-          <Avatar initials={me.initials} />
-        </div>
-      </div>
-
-      {/* mobile nav */}
-      <nav className="flex border-b border-ink md:hidden">
-        {nav.map((n) => (
+        <nav className="flex items-center gap-1">
           <Link
-            key={n.href}
-            href={n.href}
-            className={`label flex-1 py-3 text-center ${
-              active(n.href) ? "bg-ink text-paper" : "text-ink-2"
+            href="/#practices"
+            className="hidden rounded-full px-4 py-2 text-[0.92rem] font-medium text-mute transition-colors hover:text-ink sm:block"
+          >
+            Practices
+          </Link>
+          <Link
+            href="/schools"
+            className={`rounded-full px-4 py-2.5 text-[0.92rem] font-semibold transition-colors ${
+              onSchools ? "bg-signal text-card" : "bg-ink text-paper hover:bg-signal"
             }`}
           >
-            {n.label}
+            For schools
           </Link>
-        ))}
-      </nav>
+        </nav>
+      </div>
     </header>
   );
 }
 
 export function SiteFooter() {
   return (
-    <footer className="mt-24 border-t border-ink bg-ink text-paper">
-      <div className="mx-auto grid max-w-[1320px] gap-10 px-5 py-14 md:grid-cols-[1.4fr_1fr_1fr] md:px-8">
-        <div>
-          <p className="font-display text-5xl leading-[0.95]">
-            Say it badly here,
-            <br />
-            <span className="italic text-signal">so you say it well there.</span>
-          </p>
-        </div>
-        <div className="space-y-2 text-sm text-paper/70">
-          <div className="label mb-3 text-paper">Practice</div>
-          <Link href="/" className="block hover:text-paper">All stages</Link>
-          <Link href="/phrasebook" className="block hover:text-paper">Phrasebook drills</Link>
-          <Link href="/exchange" className="block hover:text-paper">Community scenarios</Link>
-        </div>
-        <div className="space-y-2 text-sm text-paper/70">
-          <div className="label mb-3 text-paper">Create</div>
-          <Link href="/studio" className="block hover:text-paper">Creator studio</Link>
-          <Link href="/studio#new" className="block hover:text-paper">Write a scenario</Link>
-          <span className="block">Payouts · 70% to creators</span>
+    <footer className="mx-3 mb-3 mt-24 rounded-[2rem] bg-ink text-paper md:mx-6 md:mb-6">
+      <div className="mx-auto flex max-w-[1200px] flex-col justify-between gap-8 px-6 py-12 md:flex-row md:items-end md:px-10">
+        <p className="font-display text-4xl leading-[1.05]">
+          Say it badly here,
+          <br />
+          <span className="text-marker">so you say it well there.</span>
+        </p>
+        <div className="flex gap-6 text-sm text-paper/70">
+          <Link href="/#practices" className="hover:text-paper">Practices</Link>
+          <Link href="/schools" className="hover:text-paper">For schools</Link>
         </div>
       </div>
       <div className="border-t border-paper/15">
-        <div className="label mx-auto flex max-w-[1320px] justify-between px-5 py-4 text-paper/50 md:px-8">
+        <div className="label mx-auto flex max-w-[1200px] justify-between px-6 py-4 text-paper/50 md:px-10">
           <span>© 2026 Native Cadence</span>
           <span>Transcription & feedback powered by Groq</span>
         </div>

@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { Creator, Feedback, Scenario, StageEvent } from "@/lib/data";
-import { Arrow, Avatar, LevelMeter, MicIcon, fmtTime } from "./ui";
+import type { Feedback, Provider, Scenario, StageEvent } from "@/lib/data";
+import { Arrow, LevelMeter, MicIcon, fmtTime } from "./ui";
 import { Review } from "./Review";
 
 type Phase = "ready" | "countdown" | "recording" | "processing" | "review";
@@ -22,13 +22,13 @@ export function PracticeSession({
   scenario,
   event,
   feedback,
-  creator,
+  provider,
   nextId,
 }: {
   scenario: Scenario;
   event: StageEvent;
   feedback: Feedback;
-  creator?: Creator;
+  provider?: Provider;
   nextId?: string;
 }) {
   const [phase, setPhase] = useState<Phase>("ready");
@@ -302,13 +302,13 @@ export function PracticeSession({
             How to answer
           </button>
           {hintOpen && (
-            <div className="relative mt-3 rotate-[-0.6deg] border-[1.5px] border-ink bg-marker p-5 hard-shadow-sm">
+            <div className="relative mt-3 rotate-[-0.6deg] rounded-2xl border border-line bg-marker p-5 hard-shadow-sm">
               {scenario.framework && (
                 <div className="mb-3 flex flex-wrap gap-1.5">
                   {scenario.framework.split(" · ").map((f, i) => (
                     <span
                       key={f}
-                      className="flex items-center gap-1.5 border border-ink bg-card px-2 py-1 text-sm font-semibold"
+                      className="flex items-center gap-1.5 border border-line bg-card px-2 py-1 text-sm font-semibold"
                     >
                       <span className="font-mono text-[0.65rem] text-mute">{i + 1}</span>
                       {f}
@@ -323,24 +323,21 @@ export function PracticeSession({
 
         <div className="flex-1" />
 
-        <div className="mt-10 flex flex-wrap items-center justify-between gap-4 border-t border-dashed border-ink/40 pt-5">
-          {creator ? (
-            <div className="flex items-center gap-3">
-              <Avatar initials={creator.initials} className="h-7 w-7 text-[0.6rem]" />
-              <span className="text-sm">
-                Written by <b>{creator.name}</b>
-                <span className="text-mute"> · {creator.credential}</span>
-              </span>
-            </div>
+        <div className="mt-10 flex flex-wrap items-center justify-between gap-4 border-t border-dashed border-line pt-5">
+          {provider ? (
+            <span className="text-sm">
+              Published by <b>{provider.name}</b>
+              <span className="text-mute"> · {provider.kind}</span>
+            </span>
           ) : (
-            <span className="label text-mute">House set · Native Cadence editorial</span>
+            <span />
           )}
           <span className="label text-mute">Time limit {fmtTime(scenario.seconds)}</span>
         </div>
       </section>
 
       {/* ── The booth ── */}
-      <section className="relative flex flex-col overflow-hidden border-[1.5px] border-ink bg-ink text-paper">
+      <section className="relative flex flex-col overflow-hidden rounded-2xl border border-line bg-ink text-paper">
         <div className="flex items-center justify-between border-b border-paper/15 px-6 py-4">
           <span className="label text-paper/60">Booth A · Mono</span>
           <span
@@ -505,10 +502,10 @@ export function PracticeSession({
 
       {phase === "ready" && (
         <Link
-          href={`/events/${event.slug}`}
+          href="/#practices"
           className="label inline-flex items-center gap-2 text-mute hover:text-ink lg:col-span-2"
         >
-          ← Back to {event.title}
+          ← All practices
         </Link>
       )}
     </div>
