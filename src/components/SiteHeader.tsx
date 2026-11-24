@@ -52,7 +52,7 @@ export function SiteFooter() {
       <div className="border-t border-paper/15">
         <div className="label mx-auto flex max-w-[1200px] justify-between px-6 py-4 text-paper/50 md:px-10">
           <span>© 2026 Native Cadence</span>
-          <span>Transcription & feedback powered by Groq</span>
+          <span>Speak. Review. Repeat.</span>
         </div>
       </div>
     </footer>

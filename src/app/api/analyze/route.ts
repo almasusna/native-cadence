@@ -2,11 +2,17 @@ import { getEvent, getScenario, type Feedback, type Phrase, type Segment } from 
 
 // POST /api/analyze  (multipart: audio=<File>, scenarioId=<string>)
 // 1. Groq Whisper → verbatim transcript
-// 2. Groq LLM (strict JSON schema) → red-pen feedback in the shape the Review UI renders
+// 2. LLM (strict JSON schema) → red-pen feedback in the shape the Review UI renders.
+//    OpenAI (gpt-5.5) when OPENAI_API_KEY is set, otherwise Groq (gpt-oss-120b).
+//    Transcription stays on Groq Whisper: it keeps disfluencies, which the filler marks rely on.
 
 const GROQ = "https://api.groq.com/openai/v1";
+const OPENAI = "https://api.openai.com/v1";
 const STT_MODEL = process.env.GROQ_STT_MODEL ?? "whisper-large-v3-turbo";
-const LLM_MODEL = process.env.GROQ_LLM_MODEL ?? "openai/gpt-oss-120b";
+const USE_OPENAI = Boolean(process.env.OPENAI_API_KEY);
+const LLM_MODEL = USE_OPENAI
+  ? (process.env.OPENAI_LLM_MODEL ?? "gpt-5.5")
+  : (process.env.GROQ_LLM_MODEL ?? "openai/gpt-oss-120b");
 const MAX_BYTES = 24 * 1024 * 1024; // Groq free tier limit is 25 MB
 
 class HttpError extends Error {
@@ -66,12 +72,16 @@ export async function POST(req: Request) {
     // ── 2. Analyse
     const t1 = Date.now();
     const callLlm = (effort: "low" | "medium") =>
-      fetch(`${GROQ}/chat/completions`, {
+      fetch(`${USE_OPENAI ? OPENAI : GROQ}/chat/completions`, {
       method: "POST",
-      headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
+      headers: {
+        Authorization: `Bearer ${USE_OPENAI ? process.env.OPENAI_API_KEY : key}`,
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({
         model: LLM_MODEL,
-        temperature: 0.4,
+        // GPT-5 reasoning models only accept the default temperature
+        ...(USE_OPENAI ? {} : { temperature: 0.4 }),
         reasoning_effort: effort,
         // reasoning tokens count against this budget too — leave plenty of room
         max_completion_tokens: 12000,
@@ -80,7 +90,7 @@ export async function POST(req: Request) {
           json_schema: { name: "feedback", strict: true, schema: feedbackSchema(event.scoring) },
         },
         messages: [
-          { role: "system", content: systemPrompt(event.scoring, event.slug === "ielts-speaking") },
+          { role: "system", content: systemPrompt(event.scoring) },
           {
             role: "user",
             content: [
@@ -108,7 +118,7 @@ export async function POST(req: Request) {
     if (!llmRes.ok) {
       const msg = await errText(llmRes);
       // Long answers can exhaust the budget mid-JSON; retry once with lighter reasoning.
-      if (llmRes.status === 400 && /max completion tokens|max_completion_tokens/i.test(msg)) {
+      if (llmRes.status === 400 && /max completion tokens|max_completion_tokens|max_tokens/i.test(msg)) {
         console.warn("[api/analyze] token budget exhausted, retrying with reasoning_effort=low");
         llmRes = await callLlm("low");
         if (!llmRes.ok) throw new HttpError(502, `Analysis failed (${llmRes.status}): ${await errText(llmRes)}`);
@@ -116,21 +126,30 @@ export async function POST(req: Request) {
         throw new HttpError(502, `Analysis failed (${llmRes.status}): ${msg}`);
       }
     }
-    const llmJson = (await llmRes.json()) as { choices: { message: { content: string } }[] };
-    const raw = JSON.parse(llmJson.choices[0].message.content) as LlmFeedback;
+    const llmJson = (await llmRes.json()) as {
+      choices: { finish_reason?: string; message: { content: string | null; refusal?: string | null } }[];
+    };
+    const choice = llmJson.choices[0];
+    if (choice.finish_reason === "length" || !choice.message.content) {
+      throw new HttpError(502, choice.message.refusal ?? "The analysis was cut short. Try a shorter answer.");
+    }
+    const raw = JSON.parse(choice.message.content) as LlmFeedback;
     const tLlm = Date.now() - t1;
 
     const feedback = toFeedback(raw, transcript, words, duration, event.scoring);
     return Response.json({
       feedback,
       transcript,
-      meta: { sttModel: STT_MODEL, llmModel: LLM_MODEL, sttMs: tStt, llmMs: tLlm },
+      meta: { sttMs: tStt, llmMs: tLlm },
     });
   } catch (err) {
     const status = err instanceof HttpError ? err.status : 500;
     const message = err instanceof Error ? err.message : "Something went wrong.";
     console.error("[api/analyze]", message);
-    return Response.json({ error: message }, { status });
+    // Server-side failures carry provider details; keep those in the logs, not the UI.
+    const publicMessage =
+      status >= 500 ? "We couldn't analyse this take right now. Please try again in a moment." : message;
+    return Response.json({ error: publicMessage }, { status });
   }
 }
 
@@ -155,7 +174,7 @@ type LlmFeedback = {
   upgraded: string;
 };
 
-function systemPrompt(criteria: string[], ielts: boolean) {
+function systemPrompt(criteria: string[]) {
   return `You are a sharp, warm speaking coach marking a learner's spoken answer like an editor with a red pen. The learner is practising English for a real high-stakes speaking situation. Your feedback must be specific to THEIR words — never generic.
 
 Return JSON only, matching the schema.
@@ -163,7 +182,7 @@ Return JSON only, matching the schema.
 FIELDS
 - headline: an editor's verdict in at most 7 words. Punchy, honest, a little witty. E.g. "Good story, buried lede."
 - verdict: 2 sentences, second person, the single most important thing to change and why.
-- band: ${ielts ? 'estimated IELTS speaking band as a string like "6.5" (0–9 in .5 steps), judged on the official descriptors.' : 'always "" (empty string).'}
+- band: always "" (empty string).
 - scores: exactly these criteria in this order: ${criteria.map((c) => `"${c}"`).join(", ")}. value 0–100 (60 = acceptable, 75 = strong, 90+ = exceptional; be calibrated, not generous). note: ≤ 12 words, concrete, referencing what they actually said.
 - annotations: the red-pen marks, in the order they appear in the transcript. Each one:
   • quote: an EXACT substring copied character-for-character from the transcript — as SHORT as possible (1–6 words), only the words being changed. Never quote a whole sentence.

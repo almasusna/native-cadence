@@ -34,7 +34,7 @@ export default async function PracticePage(props: PageProps<"/practice/[id]">) {
       <PracticeSession
         scenario={scenario}
         event={event}
-        feedback={feedbackFor(event.slug)}
+        feedback={feedbackFor()}
         provider={getProvider(scenario)}
         nextId={next.id === scenario.id ? undefined : next.id}
       />

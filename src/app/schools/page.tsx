@@ -6,7 +6,7 @@ export const metadata: Metadata = { title: "For schools — Native Cadence" };
 const points = [
   { title: "Your practices, your name", body: "Every practice shows your school, so learners can find and search for you." },
   { title: "Instant feedback for your students", body: "Learners record answers and get transcripts, scores and better phrases." },
-  { title: "Free to publish", body: "Add IELTS questions, interview tasks or any speaking practice you teach." },
+  { title: "Free to publish", body: "Add company interview or visa interview questions you teach." },
 ];
 
 export default function SchoolsPage() {

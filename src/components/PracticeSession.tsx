@@ -10,10 +10,10 @@ type Phase = "ready" | "countdown" | "recording" | "processing" | "review";
 
 const BARS = 56;
 const PIPELINE = [
-  { label: "Uploading take", model: "audio/webm · 48kHz" },
-  { label: "Transcribing", model: "groq · whisper-large-v3-turbo" },
-  { label: "Reading for structure & vocabulary", model: "groq · gpt-oss-120b" },
-  { label: "Marking up with the red pen", model: "cadence · rubric v2" },
+  { label: "Uploading take", detail: "Sending your recording" },
+  { label: "Transcribing", detail: "Every word, ums included" },
+  { label: "Reading for structure & vocabulary", detail: "Checking how the answer flows" },
+  { label: "Marking up with the red pen", detail: "Scoring against the rubric" },
 ];
 
 const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -87,7 +87,7 @@ export function PracticeSession({
     }
   }, []);
 
-  /** Send the recorded take to /api/analyze (Groq Whisper → Groq LLM). */
+  /** Send the recorded take to /api/analyze (transcription → feedback). */
   const analyze = useCallback(
     async (blob: Blob) => {
       setPhase("processing");
@@ -388,7 +388,7 @@ export function PracticeSession({
                     </span>
                     <span>
                       <span className="block font-medium">{p.label}</span>
-                      <span className="font-mono text-xs text-paper/45">{p.model}</span>
+                      <span className="font-mono text-xs text-paper/45">{p.detail}</span>
                     </span>
                   </li>
                 );

@@ -26,7 +26,7 @@ const caveat = Caveat({
 export const metadata: Metadata = {
   title: "Native Cadence — English speaking practice",
   description:
-    "Speaking practices from English schools and companies: IELTS, job interviews, cabin crew and more. Answer out loud and get instant feedback.",
+    "Speaking practices from English schools and companies: company interviews and visa interviews. Answer out loud and get instant feedback.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

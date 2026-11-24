@@ -3,7 +3,7 @@ import { PracticeList } from "@/components/PracticeList";
 import { Arrow } from "@/components/ui";
 
 const steps = [
-  { n: "1", title: "Pick a practice", body: "IELTS, job interviews, cabin crew, customer calls and more." },
+  { n: "1", title: "Pick a practice", body: "Company interviews and visa interviews." },
   { n: "2", title: "Answer out loud", body: "Read the question, press record and speak against the clock." },
   { n: "3", title: "Get feedback", body: "See your transcript, your scores and better phrases to use next time." },
 ];

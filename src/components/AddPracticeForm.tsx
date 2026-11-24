@@ -15,7 +15,7 @@ export function AddPracticeForm() {
   const { add } = useAddedPractices();
   const [provider, setProvider] = useState("");
   const [providerKind, setProviderKind] = useState<ProviderKind>("School");
-  const [event, setEvent] = useState<EventSlug>("ielts-speaking");
+  const [event, setEvent] = useState<EventSlug>("job-interview");
   const [title, setTitle] = useState("");
   const [prompt, setPrompt] = useState("");
   const [seconds, setSeconds] = useState(90);
@@ -73,7 +73,7 @@ export function AddPracticeForm() {
             required
             value={provider}
             onChange={(e) => setProvider(e.target.value)}
-            placeholder="e.g. Brightline English School"
+            placeholder="e.g. Harbour Business English"
             className={field}
           />
         </div>

@@ -2,7 +2,7 @@
 
 **Rehearse the room before you walk in.**
 
-Native Cadence is a speaking-practice app for English learners preparing for real, high-stakes conversations: a job interview, the IELTS speaking test, a cabin-crew final interview, an angry customer on the phone, a visa window, or an investor pitch.
+Native Cadence is a speaking-practice app for English learners preparing for real, high-stakes conversations: a company interview or a visa interview.
 
 You pick a *stage*, answer a *cue* out loud against a clock, and get feedback marked up the way an editor would mark it with a red pen. Weak verbs are struck through, stronger wording is written in the margin, grammar slips are corrected, and fillers are flagged. You also get scores on that stage's criteria and a model answer that keeps your own story. Phrases you like go into a personal phrasebook so you can drill them until they come naturally.
 
@@ -38,11 +38,7 @@ Each stage defines the audience (`room`) and the criteria the feedback is scored
 | Stage | Scored on |
 | --- | --- |
 | Company Interview | Structure, Evidence, Vocabulary, Fluency, Presence |
-| IELTS Speaking | Fluency & Coherence, Lexical Resource, Grammar, Pronunciation, plus an estimated **band** (0–9) |
-| Qatar Airways Cabin Crew | Warmth, Clarity, Service language, Composure, Fluency |
-| Customer Complaints | Empathy, Ownership, Clarity, Tone, Resolution |
 | Visa Interview | Directness, Consistency, Confidence, Fluency |
-| Pitch & Presentation | Hook, Clarity, Persuasion, Pace, Q&A poise |
 
 Each cue has a difficulty level (`Warm-up`, `Standard` or `Pressure`), a time limit in seconds, and a source: `house`, or `community` (written by a creator and possibly locked behind a pack subscription).
 
