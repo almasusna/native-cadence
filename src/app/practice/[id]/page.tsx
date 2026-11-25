@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { feedbackFor, getEvent, getProvider, scenarios, scenariosFor } from "@/lib/data";
+import { feedbackFor, getEvent, getProvider, scenarios } from "@/lib/data";
 import { PracticeSession } from "@/components/PracticeSession";
 
 export function generateStaticParams() {
@@ -13,7 +13,9 @@ export default async function PracticePage(props: PageProps<"/practice/[id]">) {
   if (!scenario) notFound();
 
   const event = getEvent(scenario.event)!;
-  const siblings = scenariosFor(event.slug);
+  const provider = getProvider(scenario);
+  // "Next" stays inside the same school category.
+  const siblings = scenarios.filter((s) => s.provider === scenario.provider && s.category === scenario.category);
   const pos = siblings.findIndex((s) => s.id === scenario.id);
   const next = siblings[(pos + 1) % siblings.length];
 
@@ -24,7 +26,11 @@ export default async function PracticePage(props: PageProps<"/practice/[id]">) {
           Practices
         </Link>
         <span>/</span>
-        <span>{event.title}</span>
+        <Link href={`/school/${provider.id}`} className="hover:text-ink">
+          {provider.name}
+        </Link>
+        <span>/</span>
+        <span>{scenario.category}</span>
         <span>/</span>
         <span className="text-ink">
           Cue {String(pos + 1).padStart(2, "0")} of {String(siblings.length).padStart(2, "0")}
@@ -35,7 +41,7 @@ export default async function PracticePage(props: PageProps<"/practice/[id]">) {
         scenario={scenario}
         event={event}
         feedback={feedbackFor()}
-        provider={getProvider(scenario)}
+        provider={provider}
         nextId={next.id === scenario.id ? undefined : next.id}
       />
     </div>

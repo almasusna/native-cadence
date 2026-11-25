@@ -20,6 +20,10 @@ export type Level = "Warm-up" | "Standard" | "Pressure";
 export type Scenario = {
   id: string;
   event: EventSlug;
+  /** Who published it (a Provider id). */
+  provider: string;
+  /** The school's own grouping, e.g. "Intermediate Speaking" or "IELTS Prep Speaking". */
+  category: string;
   title: string;
   prompt: string;
   hint: string;
@@ -90,20 +94,25 @@ export const events: StageEvent[] = [
 ];
 
 // Who published each practice. Fictional schools and companies for the demo.
+// A provider's id is the slug of its name, so practices added in the browser land on the same school page.
 export const providers: Provider[] = [
-  { id: "harbour", name: "Harbour Business English", kind: "School", about: "Interview and workplace English" },
-  { id: "nc", name: "Native Cadence", kind: "Platform", about: "Free starter practices" },
+  { id: "harbour-business-english", name: "Harbour Business English", kind: "School", about: "Interview and workplace English" },
+  { id: "native-cadence", name: "Native Cadence", kind: "Platform", about: "Free starter practices" },
 ];
 
-const providerByEvent: Record<EventSlug, string> = {
-  "job-interview": "harbour",
-  "visa-interview": "nc",
-};
+export const slugify = (name: string) =>
+  name
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "") || "school";
 
 export const scenarios: Scenario[] = [
   // ── Company interview
   {
     id: "ji-1",
+    provider: "harbour-business-english",
+    category: "Intermediate Interview Speaking",
     event: "job-interview",
     title: "Tell me about yourself",
     prompt: "Walk me through your background and what brings you to this role.",
@@ -115,6 +124,8 @@ export const scenarios: Scenario[] = [
   },
   {
     id: "ji-2",
+    provider: "harbour-business-english",
+    category: "Intermediate Interview Speaking",
     event: "job-interview",
     title: "A conflict with a colleague",
     prompt: "Tell me about a time you disagreed with a colleague. How did you handle it?",
@@ -126,6 +137,8 @@ export const scenarios: Scenario[] = [
   },
   {
     id: "ji-3",
+    provider: "harbour-business-english",
+    category: "Advanced Interview Speaking",
     event: "job-interview",
     title: "Your biggest failure",
     prompt: "What's the biggest professional mistake you've made, and what did you change afterwards?",
@@ -137,6 +150,8 @@ export const scenarios: Scenario[] = [
   },
   {
     id: "ji-4",
+    provider: "harbour-business-english",
+    category: "Intermediate Interview Speaking",
     event: "job-interview",
     title: "Why should we hire you?",
     prompt: "We've seen a lot of strong candidates. Why you?",
@@ -147,6 +162,8 @@ export const scenarios: Scenario[] = [
   },
   {
     id: "ji-c1",
+    provider: "harbour-business-english",
+    category: "Advanced Interview Speaking",
     event: "job-interview",
     title: "Two VPs want opposite things",
     prompt: "Sales and Engineering VPs both escalate to you with conflicting priorities for next quarter. Walk me through your call.",
@@ -157,6 +174,8 @@ export const scenarios: Scenario[] = [
   },
   {
     id: "ji-c2",
+    provider: "harbour-business-english",
+    category: "Advanced Interview Speaking",
     event: "job-interview",
     title: "Kill your own feature",
     prompt: "Tell me about a time you decided to stop working on something you'd championed.",
@@ -169,6 +188,8 @@ export const scenarios: Scenario[] = [
   // ── Visa
   {
     id: "vi-1",
+    provider: "native-cadence",
+    category: "Student Visa Prep",
     event: "visa-interview",
     title: "Purpose of travel",
     prompt: "What is the purpose of your trip?",
@@ -179,6 +200,8 @@ export const scenarios: Scenario[] = [
   },
   {
     id: "vi-2",
+    provider: "native-cadence",
+    category: "Student Visa Prep",
     event: "visa-interview",
     title: "Ties to home",
     prompt: "What guarantees that you will return to your home country?",
@@ -189,6 +212,8 @@ export const scenarios: Scenario[] = [
   },
   {
     id: "vi-3",
+    provider: "native-cadence",
+    category: "Student Visa Prep",
     event: "visa-interview",
     title: "Who pays?",
     prompt: "Who is funding your studies, and how?",
@@ -251,7 +276,7 @@ export function feedbackFor(): Feedback {
 
 export const getEvent = (slug: string) => events.find((e) => e.slug === slug);
 export const getScenario = (id: string) => scenarios.find((s) => s.id === id);
-export const getProvider = (s: Scenario) => providers.find((p) => p.id === providerByEvent[s.event])!;
+export const getProvider = (s: Scenario) => providers.find((p) => p.id === s.provider)!;
 export const scenariosFor = (slug: EventSlug) => scenarios.filter((s) => s.event === slug);
 
 export const toneClass: Record<StageEvent["tone"], { bg: string; fg: string }> = {

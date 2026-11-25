@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import type { EventSlug, Level, ProviderKind } from "@/lib/data";
-import { categories, useAddedPractices } from "@/lib/practices";
+import { categories, listedPractices, useAddedPractices } from "@/lib/practices";
+import { slugify } from "@/lib/data";
 import { Arrow } from "./ui";
 
 const levels: Level[] = ["Warm-up", "Standard", "Pressure"];
@@ -12,15 +13,23 @@ const field =
 const lbl = "mb-1.5 block text-sm font-semibold";
 
 export function AddPracticeForm() {
-  const { add } = useAddedPractices();
+  const { items: added, add } = useAddedPractices();
   const [provider, setProvider] = useState("");
   const [providerKind, setProviderKind] = useState<ProviderKind>("School");
   const [event, setEvent] = useState<EventSlug>("job-interview");
+  const [category, setCategory] = useState("");
   const [title, setTitle] = useState("");
   const [prompt, setPrompt] = useState("");
   const [seconds, setSeconds] = useState(90);
   const [level, setLevel] = useState<Level>("Standard");
   const [done, setDone] = useState<string | null>(null);
+
+  // Suggest the categories this school already uses.
+  const schoolCategories = useMemo(() => {
+    const id = slugify(provider);
+    const names = [...added, ...listedPractices].filter((p) => p.providerId === id).map((p) => p.category);
+    return [...new Set(names.filter(Boolean))];
+  }, [added, provider]);
 
   if (done) {
     return (
@@ -28,7 +37,7 @@ export function AddPracticeForm() {
         <span className="grid h-12 w-12 place-items-center rounded-full bg-marker text-xl">✓</span>
         <h2 className="mt-6 font-display text-3xl">Practice added</h2>
         <p className="mt-3 text-ink-2">
-          <b>{done}</b> is now in the practice list, marked “In review”. Learners can use it once it has been
+          <b>{done}</b> is now on your school&rsquo;s page, marked “In review”. Learners can use it once it has been
           reviewed.
         </p>
         <p className="label mt-4 text-mute">Demo: practices are saved in this browser only.</p>
@@ -57,7 +66,7 @@ export function AddPracticeForm() {
       className="cue space-y-5 p-6 md:p-8"
       onSubmit={(e) => {
         e.preventDefault();
-        add({ provider: provider.trim(), providerKind, event, title: title.trim(), prompt: prompt.trim(), seconds, level });
+        add({ provider: provider.trim(), providerKind, event, category: category.trim(), title: title.trim(), prompt: prompt.trim(), seconds, level });
         setDone(title.trim());
       }}
     >
@@ -94,17 +103,38 @@ export function AddPracticeForm() {
         </div>
       </div>
 
-      <div>
-        <label htmlFor="category" className={lbl}>
-          Category
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div>
+          <label htmlFor="category" className={lbl}>
+            Category
+          </label>
+          <input
+            id="category"
+            required
+            list="school-categories"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            placeholder="e.g. IELTS Prep Speaking"
+            className={field}
+          />
+          <datalist id="school-categories">
+            {schoolCategories.map((c) => (
+              <option key={c} value={c} />
+            ))}
+          </datalist>
+        </div>
+        <div>
+        <label htmlFor="type" className={lbl}>
+          Practice type
         </label>
-        <select id="category" value={event} onChange={(e) => setEvent(e.target.value as EventSlug)} className={field}>
+        <select id="type" value={event} onChange={(e) => setEvent(e.target.value as EventSlug)} className={field}>
           {categories.map((c) => (
             <option key={c.slug} value={c.slug}>
               {c.title}
             </option>
           ))}
         </select>
+        </div>
       </div>
 
       <div>
